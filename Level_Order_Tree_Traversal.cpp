@@ -1,5 +1,5 @@
 // https://www.geeksforgeeks.org/level-order-tree-traversal/
-/* C++ program to print level order traversal using STL */ 层次遍历
+/* C++ program to print level order traversal using STL */
 #include <iostream>
 #include <queue>
 using namespace std;
