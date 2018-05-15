@@ -1,5 +1,5 @@
 // https://www.geeksforgeeks.org/construct-tree-from-given-inorder-and-preorder-traversal/
-// 根据前序和中序构造二叉树
+// 根据前序和中序构造二叉树 并测试
 /* program to construct tree using inorder and preorder traversals */
 #include<stdio.h>
 #include<stdlib.h>
