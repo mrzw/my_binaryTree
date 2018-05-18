@@ -1,8 +1,7 @@
-// https://www.geeksforgeeks.org/breadth-first-search-or-bfs-for-a-graph/
-// BFS遍历 时间复杂度O(V+E)
-#include <iostream>
-#include <list>
-#include <queue>
+// https://www.geeksforgeeks.org/depth-first-search-or-dfs-for-a-graph/
+// DFS遍历 时间复杂度O(V+E)
+#include<iostream>
+#include<list>
 using namespace std;
  
 // Graph class represents a directed graph
@@ -16,13 +15,16 @@ public:
     // adjacency lists
     list<int> *adj;
 public: 
+    // A recursive function used by DFS
+    void DFSUtil(int v, bool visited[]);
+
     Graph(int V);   // Constructor
  
     // function to add an edge to graph
     void addEdge(int v, int w);
  
-    // BFS traversal
-    void BFS();
+    // DFS traversal
+    void DFS();
 };
  
 Graph::Graph(int V)
@@ -36,34 +38,37 @@ void Graph::addEdge(int v, int w)
     adj[v].push_back(w); // Add w to v’s list.
 }
  
+void Graph::DFSUtil(int v, bool visited[])
+{
+    // Mark the current node as visited and
+    // print it
+    visited[v] = true;
+    cout << v << " ";
+ 
+    // Recur for all the vertices adjacent
+    // to this vertex
+    list<int>::iterator i;
+    for (i = adj[v].begin(); i != adj[v].end(); ++i)
+        if (!visited[*i])
+            DFSUtil(*i, visited);
+}
+ 
 // DFS traversal of the vertices reachable from v.
 // It uses recursive DFSUtil()
-void Graph::BFS()
+void Graph::DFS()
 {
     // Mark all the vertices as not visited
     bool *visited = new bool[V];
     for (int i = 0; i < V; i++)
         visited[i] = false;
  
-    // Create a queue for BFS
-    for(int i=0; i<V; ++i) {
-    	if(!visited[i]) {
-			queue<int> q;
-			q.push(i);
-			visited[i] = true;
-			while(!q.empty()) {
-				int s = q.front();
-				cout << s << " ";
-				q.pop();
-				for(auto j=adj[s].begin(); j!=adj[s].end(); ++j) {
-					if(!visited[*j]) {
-						visited[*j] = true;
-						q.push(*j);
-					}
-				}
-			}    	
-    	}
-    }
+    // Call the recursive helper function
+    // to print DFS traversal
+   	for(int i=0; i<V; ++i) {
+   		if(!visited[i]) {
+   			DFSUtil(i, visited);
+   		}
+   	}
 }
  
 int main()
@@ -77,8 +82,8 @@ int main()
     g.addEdge(2, 3);
     g.addEdge(3, 3);
  
-    cout << "Following is Breadth First Traversal" << endl;
-    g.BFS();
+    cout << "Following is Depth First Traversal" << endl;
+    g.DFS();
  
     return 0;
 }
