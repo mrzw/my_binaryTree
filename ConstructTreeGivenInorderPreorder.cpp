@@ -1,103 +1,51 @@
-// https://www.geeksforgeeks.org/construct-tree-from-given-inorder-and-preorder-traversal/
-// 根据前序和中序构造二叉树 并测试
-/* program to construct tree using inorder and preorder traversals */
-#include<stdio.h>
-#include<stdlib.h>
- 
-/* A binary tree node has data, pointer to left child
-   and a pointer to right child */
-struct node
-{
-  char data;
-  struct node* left;
-  struct node* right;
+#include <iostream>
+#include<stdio.h> 
+#include<vector>
+using namespace std;
+
+struct TreeNode {
+	int val;
+	TreeNode *left;
+	TreeNode *right;
+	TreeNode(int x) : val(x), left(NULL), right(NULL) {}
 };
- 
-/* Prototypes for utility functions */
-int search(char arr[], int strt, int end, char value);
-struct node* newNode(char data);
- 
-/* Recursive function to construct binary of size len from
-   Inorder traversal in[] and Preorder traversal pre[].  Initial values
-   of inStrt and inEnd should be 0 and len -1.  The function doesn't
-   do any error checking for cases where inorder and preorder
-   do not form a tree */
-struct node* buildTree(char in[], char pre[], int inStrt, int inEnd)
-{
-  static int preIndex = 0;
- 
-  if(inStrt > inEnd)
-     return NULL;
- 
-  /* Pick current node from Preorder traversal using preIndex
-    and increment preIndex */
-  struct node *tNode = newNode(pre[preIndex++]);
- 
-  /* If this node has no children then return */
-  if(inStrt == inEnd)
-    return tNode;
- 
-  /* Else find the index of this node in Inorder traversal */
-  int inIndex = search(in, inStrt, inEnd, tNode->data);
- 
-  /* Using index in Inorder traversal, construct left and
-     right subtress */
-  tNode->left = buildTree(in, pre, inStrt, inIndex-1);
-  tNode->right = buildTree(in, pre, inIndex+1, inEnd);
- 
-  return tNode;
+
+class Solution {  
+public:  
+    struct TreeNode* PreInCreat(vector<int> pre,vector<int> in,int l1,int h1,int l2,int h2)  
+    {  
+        int i;
+        TreeNode* root = new TreeNode(pre[l1]);  
+        for(i=l2;in[i]!=root->val;i++); 
+        int llen = i-l2;  
+        int rlen = h2-i;
+        if(llen)  
+            root ->left = PreInCreat(pre,in,l1+1,l1+llen,l2,l2+llen-1);  
+        else  
+            root ->left = NULL;  
+        if(rlen)  
+            root ->right = PreInCreat(pre,in,h1-rlen+1,h1,h2-rlen+1,h2);  
+        else  
+            root ->right = NULL;  
+        return root;  
+    }  
+       
+    struct TreeNode* reConstructBinaryTree(vector<int> pre,vector<int> in) {  
+        return PreInCreat(pre,in,0,pre.size()-1,0,in.size()-1);  
+    }  
+};  
+
+void display(TreeNode* node) {
+	if(node==NULL) return;
+	display(node->left);
+	cout << node->val << " ";
+	display(node->right);
 }
- 
-/* UTILITY FUNCTIONS */
-/* Function to find index of value in arr[start...end]
-   The function assumes that value is present in in[] */
-int search(char arr[], int strt, int end, char value)
-{
-  int i;
-  for(i = strt; i <= end; i++)
-  {
-    if(arr[i] == value)
-      return i;
-  }
-}
- 
-/* Helper function that allocates a new node with the
-   given data and NULL left and right pointers. */
-struct node* newNode(char data)
-{
-  struct node* node = (struct node*)malloc(sizeof(struct node));
-  node->data = data;
-  node->left = NULL;
-  node->right = NULL;
- 
-  return(node);
-}
- 
-/* This funtcion is here just to test buildTree() */
-void printInorder(struct node* node)
-{
-  if (node == NULL)
-     return;
- 
-  /* first recur on left child */
-  printInorder(node->left);
- 
-  /* then print the data of node */
-  printf("%c ", node->data);
- 
-  /* now recur on right child */
-  printInorder(node->right);
-}
- 
-/* Driver program to test above functions */
-int main()
-{
-  char in[] = {'D', 'B', 'E', 'A', 'F', 'C'};
-  char pre[] = {'A', 'B', 'D', 'E', 'C', 'F'};
-  int len = sizeof(in)/sizeof(in[0]);
-  struct node *root = buildTree(in, pre, 0, len - 1);
- 
-  /* Let us test the built tree by printing Insorder traversal */
-  printf("Inorder traversal of the constructed tree is \n");
-  printInorder(root);
+int main(int argc, char** argv) {
+	vector<int> pre = {1,2,4,7,3,5,6,8};
+	vector<int> vin = {4,7,2,1,5,3,8,6};
+	Solution *s = new Solution;
+	TreeNode* node = s->reConstructBinaryTree(pre, vin);
+	display(node);
+	return 0;
 }
